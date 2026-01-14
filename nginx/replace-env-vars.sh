@@ -21,11 +21,13 @@ replace_env_var() {
 
 # Replace each environment variable
 replace_env_var "API_URL"
+replace_env_var "API_URI"
 replace_env_var "APP_MOUNT_URI"
-replace_env_var "APPS_MARKETPLACE_API_URL"
-replace_env_var "EXTENSIONS_API_URL"
-replace_env_var "APPS_TUNNEL_URL_KEYWORDS"
-replace_env_var "IS_CLOUD_INSTANCE"
-replace_env_var "LOCALE_CODE"
+
+# Fallback: Force replace the known incorrect origin-prod URL if API_URL is provided
+if [ -n "$API_URL" ]; then
+  echo "Force replacing origin-prod with $API_URL"
+  sed -i "s#https://origin-prod.kyeol.click/graphql/#$API_URL#g" "$INDEX_BUNDLE_PATH"
+fi
 
 echo "Environment variable replacement complete."
